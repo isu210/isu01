@@ -1,0 +1,124 @@
+
+CREATE TABLE Planes (  
+id int primary key, 
+ xDoc Xml not null  
+) 
+  
+INSERT INTO Planes VALUES (1,  
+'<planes>  
+  	<plane>  
+	<year> 1977 </year>  
+	<make> Cessna </make>  
+	<model> Skyhawk </model>  
+	<color> Light blue and white </color>  
+	</plane> 
+ 
+	<plane>  
+	<year> 1975 </year>  
+	<make> Piper </make>  
+	<model> Apache </model>  
+	<color> White </color>  
+	</plane>
+  
+	<plane>  
+	<year> 1960 </year>  
+	<make> Cessna </make>  
+	<model> Centurian </model>  
+	<color> Yellow and white </color>  
+	</plane>
+  
+	<plane>  
+	<year> 1956 </year>  
+	<make> Piper </make>  
+	<model> Tripacer </model>  
+	<color> Blue </color>  
+ 	</plane>  
+</planes>'  
+) 
+
+
+ 
+a) SELECT xDoc.query(' let $planes := /planes/plane 
+Return<oldPlanes> 
+	{ 
+	for $c in //plane let 
+	$d := $a/make let 
+	$e := $a/model let 
+	$f := $a/year where 
+	$g < 1970 
+	return($d,$e) 
+	} 
+	</oldPlanes> ' ) 
+ 
+	FROM Planes 
+ 
+	Output:
+  
+  <oldPlanes>  
+	<make> Cessna </make>  
+	<model> Centurian </model>  
+	<make> Piper </make>  
+	<model> Tripacer </model>  
+  </oldPlanes>  
+ 
+b) 
+	Output:
+  
+	<results>  
+	<make> Cessna </make>  
+	<model> Skyhawk </model>  
+	<year> 1977 </year>  
+	</results> 
+c)
+SELECT xDoc.query(' let $planes := /planes/plane  
+return <table>  
+	<tr>  
+  		<th>Model</th>  
+  		<th>Color</th>  
+	</tr>  {  
+	for $c in //plane  
+	let $m:= $p/model  
+	let $c:= $p/color  
+	return  
+	(  
+	<tr>  
+  		<td>{data($m)}</td>  
+  		<td>{data($c)}</td>  
+	</tr>  
+)  
+}  
+	</table>')  
+	FROM Planes  
+ 
+ Output:  
+ 
+  <table>  
+    <tr>  
+	<th>Model</th>  
+	<th>Color</th>  
+    </tr>  
+    <tr>  
+	<td> Skyhawk </td>  
+        <td> Light blue and white </td>  
+    </tr>  
+    <tr>  
+       <td> Apache </td>  
+       <td> White </td>  
+    </tr>  
+    <tr>  
+       <td> Centurian </td>  
+       <td> Yellow and white </td>  
+    </tr>  
+    <tr>  
+	<td> Tripacer </td>  
+	<td> Blue </td>  
+    </tr>  
+   </table> 
+
+
+
+
+
+
+
+
